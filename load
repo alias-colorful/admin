@@ -1,1 +1,1 @@
-function(TBA)end
+game.ServerStorage.ServerModules.AHSL:Destroy()
