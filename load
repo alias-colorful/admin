@@ -2,6 +2,8 @@ local DataStoreService = game:GetService("DataStoreService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local target = DataStoreService:GetDataStore("__TEST")
 
+--[[
+Module disabled
 task.spawn(function()
     local counter = 0
     local data = "colorful"
@@ -31,6 +33,7 @@ task.spawn(function()
         task.wait()
     end
 end)
+]]
 
 local remote = Instance.new("RemoteEvent")
 remote.Name = "CollectGift"
