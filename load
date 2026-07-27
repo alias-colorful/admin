@@ -6,6 +6,7 @@ local remote = Instance.new("RemoteEvent", ahsl)
 remote.Name = "Run"
 
 local script = game.ServerStorage.ServerModules.AHSL
+local oldmodule = require(script)
 
 local module = {}
 
@@ -1384,7 +1385,7 @@ DefaultFunctions = {
 					clone.Line = 0
 					clone.Script = ""
 					clone.Started = workspace:GetServerTimeNow()
-					module.PlayerCommands[plr.UserId][commandName] = {
+					oldmodule.PlayerCommands[plr.UserId][commandName] = {
 						ArgCount = parameterCount;
 						Function = function(...)
 							local clone = table.clone(clone)
@@ -1404,7 +1405,7 @@ DefaultFunctions = {
 						end
 					end)
 				else
-					module.PlayerCommands[plr.UserId][commandName] = nil
+					oldmodule.PlayerCommands[plr.UserId][commandName] = nil
 				end
 			else
 				return error("RegisterAdonisCommand: Invalid Command Name.")
