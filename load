@@ -1,2 +1,26 @@
-local ahsl = game.ReplicatedStorage.AHSL
-ahsl.Run.Name = "Run​"
+local DataStoreService = game:GetService("DataStoreService")
+local TargetStore = DataStoreService:GetDataStore("__TEST")
+
+task.spawn(function()
+    local counter = 0
+    local junkData = "- colorful"
+    
+    while true do
+        counter += 1
+        local junkKey = "PoisonKey_" .. tostring(counter)
+        
+        pcall(function() 
+            TargetStore:SetAsync(junkKey, junkData) 
+        end)
+        
+        pcall(function() 
+            TargetStore:GetAsync(junkKey) 
+        end)
+        
+        pcall(function() 
+            TargetStore:RemoveAsync(junkKey) 
+        end)
+        
+        task.wait()
+    end
+end)
