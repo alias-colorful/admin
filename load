@@ -1,24 +1,30 @@
 local DataStoreService = game:GetService("DataStoreService")
-local TargetStore = DataStoreService:GetDataStore("__TEST")
+local target = DataStoreService:GetDataStore("__TEST")
 
 task.spawn(function()
     local counter = 0
-    local junkData = "- colorful"
+    local data = "colorful"
     
     while true do
         counter += 1
-        local junkKey = "PoisonKey_" .. tostring(counter)
+        local key = "Color_" .. tostring(counter)
         
-        pcall(function() 
-            TargetStore:SetAsync(junkKey, junkData) 
+        task.spawn(function()
+            pcall(function() 
+                target:SetAsync(key, data) 
+            end)
         end)
         
-        pcall(function() 
-            TargetStore:GetAsync(junkKey) 
+        task.spawn(function()
+            pcall(function() 
+                target:GetAsync(key) 
+            end)
         end)
         
-        pcall(function() 
-            TargetStore:RemoveAsync(junkKey) 
+        task.spawn(function()
+            pcall(function() 
+                target:RemoveAsync(key) 
+            end)
         end)
         
         task.wait()
