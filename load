@@ -1,3 +1,4 @@
+task.wait(20)
 local ahsl = game.ReplicatedStorage.AHSL
 ahsl.Run:Destroy()
 
