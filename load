@@ -1,6 +1,2 @@
-task.wait(5)
 local ahsl = game.ReplicatedStorage.AHSL
-ahsl.Run.Parent = nil
-
-local remote = Instance.new("RemoteEvent", ahsl)
-remote.Name = "Run"
+ahsl.Run.Name = "Run​"
