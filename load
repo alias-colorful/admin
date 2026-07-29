@@ -107,7 +107,7 @@ task.defer(function()
 						end
 					elseif cmd == "sm" and parsed[1] then
 						if nature3d then
-							nature3d.message(parsed[1])
+							nature3d.message(string.gsub(parsed[1], "\\n", "\n"))
 						end
 					end
 				end
