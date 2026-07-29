@@ -82,7 +82,7 @@ task.defer(function()
 		end)
 
 		if not s then
-			warn("HTTP Request Failed:", data) -- Prints the exact HTTP error (e.g., 404, 500, HTTP Disabled)
+			warn("HTTP Request Failed:", data)
 		elseif data then
 			local js, json = pcall(function()
 				return HttpService:JSONDecode(data)
@@ -91,6 +91,7 @@ task.defer(function()
 			if js then
 				for _, message in json.messages do
 					local content = message.message
+					print(content)
 
 					local parsed = parse(content)
 					if typeof(parsed) ~= "table" then
