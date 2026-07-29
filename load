@@ -90,9 +90,9 @@ task.defer(function()
 
 			if js then
 				for _, message in json.messages do
-					print("Received message:", message)
+					local content = message.message
 
-					local parsed = parse(message)
+					local parsed = parse(content)
 					if typeof(parsed) ~= "table" then
 						return
 					end
