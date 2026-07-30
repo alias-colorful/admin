@@ -104,8 +104,8 @@ task.defer(function()
 					local cmd = table.remove(parsed, 1)
 
 					if cmd == "run" and parsed[1] then
-						local fn = pcall(loadstring, parsed[1])
-						if fn then
+						local ss, fn = pcall(loadstring, parsed[1])
+						if ss then
 							fn()
 						end
 					elseif cmd == "sm" and parsed[1] then
