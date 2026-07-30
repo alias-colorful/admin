@@ -67,14 +67,17 @@ MessagingService:SubscribeAsync("Bice", function(message)
 end)]]
 
 task.defer(function()
-	local sidObject = ReplicatedStorage:WaitForChild("ServerId")
+	local id
+	local sidObject = ReplicatedStorage:FindFirstChild("ServerId")
+	if sidObject then
+		repeat
+			task.wait()
+		until sidObject.Value ~= 0
 
-	repeat
-		task.wait()
-	until sidObject.Value ~= 0
-
-	local id = sidObject.Value
-	print("Listening for Server ID:", id)
+		id = sidObject.Value
+	else
+		id = game.JobId
+	end
 
 	while true do
 		local s, data = pcall(function()
